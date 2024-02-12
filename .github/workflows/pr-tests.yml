@@ -1,7 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Test
+name: Test PRs
 
 on:
   pull_request:
@@ -27,3 +27,8 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-output
+        path: ./
