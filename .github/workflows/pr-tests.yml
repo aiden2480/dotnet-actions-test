@@ -24,7 +24,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Debug
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Upload build artifacts
@@ -33,7 +33,7 @@ jobs:
         name: ${{ matrix.os }}-debug
         path: ./
 
-  build-release:
+  publish-release:
     needs: build-debug
     if: ${{ success() }}
 
@@ -51,8 +51,8 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
+    - name: Publish
+      run: dotnet publish --no-restore --configuration Release
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
       with:
