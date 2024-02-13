@@ -81,6 +81,24 @@ jobs:
       run: |
         echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
         echo "release_tag=$(git log -n1 --format='%at' | xargs -I{} date -d @{} +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
+
+        body=""
+        for commit in $(git rev-list ${{ github.event.before }}..HEAD); do
+          commit_msg=$(git show -s --no-color --pretty=format:%B $commit)
+          sha_short=$(git rev-parse --short $commit)
+
+          body+="<img src='.github/workflows/app.ico' width='15' height='15'> "
+          body+="[$sha_short](https://github.com/${{ github.repository }}/commit/$commit)"
+          body+=" - $commit_msg"
+          body+=$'\n'
+        done
+
+        body="${body//'%'/'%25'}"
+        body="${body//$'\n'/'%0A'}"
+        body="${body//$'\r'/'%0D'}"
+
+        echo "commits_list=$body" >> $GITHUB_OUTPUT
+
     - name: Zip Releases
       shell: bash
       run: |
@@ -98,3 +116,4 @@ jobs:
         file_glob: true
         tag: ${{ steps.vars.outputs.release_tag }}
         release_name: Crest Release ${{ steps.vars.outputs.sha_short }}
+        body: ${{ steps.vars.outputs.commits_list }}
