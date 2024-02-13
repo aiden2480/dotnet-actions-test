@@ -35,7 +35,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     needs: test
-    # if: ${{ success() && !github.event.pull_request }}
+    if: ${{ success() && !github.event.pull_request }}
 
     strategy:
       matrix:
