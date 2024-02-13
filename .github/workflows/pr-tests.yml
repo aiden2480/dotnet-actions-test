@@ -91,7 +91,7 @@ jobs:
           os_name=$(basename "${dir%/}" | cut -d'-' -f1)
           zip_name="crest-${os_name}-${{ steps.vars.outputs.sha_short }}"
 
-          zip -j "${zip_name}.zip" "$dir"*
+          zip -j "artifacts/${zip_name}.zip" "$dir"*
         done
 
     - name: Upload Release
@@ -100,4 +100,4 @@ jobs:
         file: artifacts/*.zip
         file_glob: true
         tag: ${{ steps.vars.outputs.release_tag }}
-        release_name: Crest release ${{ steps.vars.outputs.sha_short }}
+        release_name: Crest Release ${{ steps.vars.outputs.sha_short }}
