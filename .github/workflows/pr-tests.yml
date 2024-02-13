@@ -36,8 +36,8 @@ jobs:
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     
-    # needs: test
-    # if: ${{ success() }}
+    needs: test
+    if: ${{ success() }} && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch')
 
     strategy:
       matrix:
