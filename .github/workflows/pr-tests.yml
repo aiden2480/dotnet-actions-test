@@ -27,11 +27,6 @@ jobs:
       run: dotnet build --no-restore --configuration Debug
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ matrix.os }}-debug
-        path: ./
 
   publish-release:
     needs: build-debug
@@ -57,4 +52,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}-release
-        path: ./
+        path: ./DotNetApp/bin/publish

@@ -9,6 +9,9 @@
     <SelfContained>true</SelfContained>
 	<PublishTrimmed>true</PublishTrimmed>
 	<PublishReadyToRun>true</PublishReadyToRun>
+	<DebugType>none</DebugType>
+	<DebugSymbols>false</DebugSymbols>
+	<PublishDir>bin/publish</PublishDir>
   </PropertyGroup>
 
 </Project>
