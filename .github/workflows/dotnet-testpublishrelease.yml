@@ -87,7 +87,7 @@ jobs:
           commit_msg=$(git show -s --no-color --pretty=format:%B $commit)
           sha_short=$(git rev-parse --short $commit)
 
-          body+="<img src='.github/workflows/app.ico' width='15' height='15'> "
+          body+="<img src='app.ico' width='15' height='15'> "
           body+="[$sha_short](https://github.com/${{ github.repository }}/commit/$commit)"
           body+=" - $commit_msg"
           body+=$'\n'
