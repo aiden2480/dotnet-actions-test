@@ -84,10 +84,10 @@ jobs:
 
         body=""
         for commit in $(git rev-list ${{ github.event.before }}..HEAD); do
-          commit_msg=$(git show -s --no-color --pretty=format:%B $commit)
+          commit_msg=$(git show -s --no-color --pretty=format:%s $commit)
           sha_short=$(git rev-parse --short $commit)
 
-          body+="<img src='.github/workflows/app.ico' width='15' height='15'> "
+          body+="<img src='app.ico' width='15' height='15'> "
           body+="[$sha_short](https://github.com/${{ github.repository }}/commit/$commit)"
           body+=" - $commit_msg"
           body+=$'\n'
@@ -104,7 +104,7 @@ jobs:
       run: |
         for dir in artifacts/*/; do
           os_name=$(basename "${dir%/}" | cut -d'-' -f1)
-          zip_name="crest-${os_name}-${{ steps.vars.outputs.sha_short }}"
+          zip_name="crest-${os_name}"
 
           zip -j "artifacts/${zip_name}.zip" "$dir"*
         done
