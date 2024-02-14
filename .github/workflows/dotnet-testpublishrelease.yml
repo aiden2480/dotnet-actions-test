@@ -104,7 +104,7 @@ jobs:
       run: |
         for dir in artifacts/*/; do
           os_name=$(basename "${dir%/}" | cut -d'-' -f1)
-          zip_name="crest-${os_name}-${{ steps.vars.outputs.sha_short }}"
+          zip_name="crest-${os_name}"
 
           zip -j "artifacts/${zip_name}.zip" "$dir"*
         done
