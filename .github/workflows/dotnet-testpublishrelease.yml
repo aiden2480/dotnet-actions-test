@@ -84,7 +84,7 @@ jobs:
 
         body=""
         for commit in $(git rev-list ${{ github.event.before }}..HEAD); do
-          commit_msg=$(git show -s --no-color --pretty=format:%B $commit)
+          commit_msg=$(git show -s --no-color --pretty=format:%s $commit)
           sha_short=$(git rev-parse --short $commit)
 
           body+="<img src='app.ico' width='15' height='15'> "
