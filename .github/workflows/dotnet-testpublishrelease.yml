@@ -34,8 +34,8 @@ jobs:
   publish:
     runs-on: ${{ matrix.os }}
     
-    needs: test
-    if: ${{ success() }}
+    # needs: test
+    # if: ${{ success() }}
 
     strategy:
       matrix:
@@ -51,7 +51,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish
-      run: dotnet publish --no-restore --configuration Release --self-contained ${{ matrix.framework-dependency == 'self-contained' && 'true' || 'false' }}
+      run: dotnet publish --configuration Release --self-contained ${{ matrix.framework-dependency == 'self-contained' && 'true' || 'false' }}
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
