@@ -35,11 +35,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     needs: test
-    if: ${{ success() && !github.event.pull_request }}
+    if: ${{ success() }}
 
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        framework-dependency: [self-contained, framework-dependent]
 
     steps:
     - uses: actions/checkout@v4
@@ -50,11 +51,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish
-      run: dotnet publish --no-restore --configuration Release
+      run: dotnet publish --no-restore --configuration Release --self-contained ${{ matrix.framework-dependency == 'self-contained' && 'true' || 'false' }}
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.os }}-release
+        name: ${{ matrix.os }}-release-${{ matrix.framework-dependency }}
         path: ./Crest/bin/publish
         if-no-files-found: error
 
@@ -116,4 +117,6 @@ jobs:
         file_glob: true
         tag: ${{ steps.vars.outputs.release_tag }}
         release_name: Crest Release ${{ steps.vars.outputs.sha_short }}
-        body: ${{ steps.vars.outputs.commits_list }}
+        body: Downloads are available below for windows and ubuntu. If dotnet 6.0 is not installed, download the larger self-contained asset, otherwise the framework-dependent download will suffice
+
+          ${{ steps.vars.outputs.commits_list }}
