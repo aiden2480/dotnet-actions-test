@@ -59,7 +59,7 @@ jobs:
         if-no-files-found: error
 
   release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     needs: publish
     if: ${{ success() }}
@@ -75,6 +75,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: artifacts
+    - name: Code sign executables
+      uses: dlemstra/code-sign-action@v1
+      with:
+        certificate: ${{ secrets.CERTIFICATE }}
+        password: ${{ secrets.CERTIFICATE_PASSWORD }}
+        folder: artifacts
+        description: Crest for Scouts Terrain 
+
     - name: Set variables
       id: vars
       shell: bash
