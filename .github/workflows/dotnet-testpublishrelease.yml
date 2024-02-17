@@ -122,6 +122,7 @@ jobs:
         file_glob: true
         tag: ${{ steps.vars.outputs.release_tag }}
         release_name: Crest Release ${{ steps.vars.outputs.sha_short }}
-        body: Downloads are available below for windows and ubuntu. If dotnet 6.0 is not installed, download the larger self-contained asset, otherwise the framework-dependent download will suffice
-
+        body: |
           ${{ steps.vars.outputs.commits_list }}
+
+          Downloads are available for windows and ubuntu. If dotnet 6.0 is not installed, download the larger self-contained asset, otherwise the smaller framework-dependent download will suffice
