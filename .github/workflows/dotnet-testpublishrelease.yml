@@ -115,6 +115,7 @@ jobs:
     - name: Zip Releases
       shell: bash
       run: |
+        pacman -S zip
         for dir in artifacts/*/; do
           os_name=$(basename "${dir%/}" | cut -d'-' -f1)
           zip_name="crest-${os_name}"
