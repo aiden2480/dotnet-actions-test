@@ -56,6 +56,17 @@ jobs:
     - name: Publish
       run: dotnet publish --configuration Release --self-contained ${{ matrix.framework-dependency == 'self-contained' && 'true' || 'false' }}
 
+    - name: Install root certificate
+      if: matrix.os == 'windows-latest'
+      run: 
+        $certificate_root = "${{ secrets.CERTIFICATE_ROOT }}"
+        $certificate_root = $certificate_root -replace '-----BEGIN CERTIFICATE-----', ''
+        $certificate_root = $certificate_root -replace '-----END CERTIFICATE-----', ''
+
+        $decoded_certificate = [System.Convert]::FromBase64String($certificate_root)
+        Set-Content -Path "certificate_root.cer" -Value $decoded_certificate -Encoding Byte
+        Import-Certificate -FilePath "certificate_root.cer" -CertStoreLocation "Cert:\CurrentUser\Root"
+
     - name: Code sign executables
       if: matrix.os == 'windows-latest'
       uses: dlemstra/code-sign-action@v1
