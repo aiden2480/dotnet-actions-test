@@ -61,10 +61,8 @@ jobs:
       run: |
         Add-Content -Path "./base64_root.txt" $Env:certificate_root_base64
 
-        Get-Content -Path "./base64_root.txt"
-
         CertUtil.exe -decode "./base64_root.txt" "./certificate_root.cer"
-        Import-Certificate -FilePath "./certificate_root.cer" -CertStoreLocation "Cert:\CurrentUser\Root"
+        Import-Certificate -FilePath "./certificate_root.cer" -CertStoreLocation "Cert:\CurrentUser\My"
       env:
         certificate_root_base64: ${{ secrets.CERTIFICATE_ROOT }}
 
