@@ -35,7 +35,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     # needs: test
-    # if: ${{ success() }}
+    # if: ${{ success() && !github.event.pull_request }}
 
     strategy:
       matrix:
@@ -44,20 +44,53 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Publish
       run: dotnet publish --configuration Release --self-contained ${{ matrix.framework-dependency == 'self-contained' && 'true' || 'false' }}
+
+    - name: Install root certificate
+      if: matrix.os == 'windows-latest'
+      run: |
+        Add-Content -Path "./base64_root.txt" $Env:certificate_root_base64
+
+        CertUtil.exe -decode "./base64_root.txt" "./certificate_root.cer"
+        Import-Certificate -FilePath "./certificate_root.cer" -CertStoreLocation "Cert:\CurrentUser\My"
+      env:
+        certificate_root_base64: ${{ secrets.CERTIFICATE_ROOT }}
+
+    - name: Code sign executables
+      if: matrix.os == 'windows-latest'
+      uses: dlemstra/code-sign-action@v1
+      with:
+        certificate: ${{ secrets.CERTIFICATE }}
+        password: ${{ secrets.CERTIFICATE_PASSWORD }}
+        folder: ./Crest/bin/publish
+        description: Crest for Scouts Terrain
+
+    # - name: Verify code signature
+    #   if: matrix.os == 'windows-latest'
+    #   run: |
+    #     & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/signtool.exe' verify /pa /v ./Crest/bin/publish/Crest.exe
+
+    - name: Debug output
+      if: matrix.os == 'windows-latest'
+      run: Get-AuthenticodeSignature -FilePath ./Crest/bin/publish/Crest.exe | Format-List -Property *
+
     - name: Set variables
       id: vars
       shell: bash
       run: |
         os=$(echo "${{ matrix.os }}" | sed 's/-latest//')
         echo "artifact_name=crest-${os}-${{ matrix.framework-dependency }}" >> $GITHUB_OUTPUT
+
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
