@@ -59,14 +59,12 @@ jobs:
     - name: Install root certificate
       if: matrix.os == 'windows-latest'
       run: |
-        $certificate_root = $certificate_root -replace '-----BEGIN CERTIFICATE-----', ''
-        $certificate_root = $certificate_root -replace '-----END CERTIFICATE-----', ''
+        Add-Content -Path "base64_root.txt" $certificate_root_base64
 
-        $decoded_certificate = [System.Convert]::FromBase64String($certificate_root)
-        Set-Content -Path "certificate_root.cer" -Value $decoded_certificate -AsByteStream
+        CertUtil.exe -decode "base64_root.txt" "certificate_root.cer"
         Import-Certificate -FilePath "certificate_root.cer" -CertStoreLocation "Cert:\CurrentUser\Root"
       env:
-        certificate_root: ${{ secrets.CERTIFICATE_ROOT }}
+        certificate_root_base64: ${{ secrets.CERTIFICATE_ROOT }}
 
     - name: Code sign executables
       if: matrix.os == 'windows-latest'
