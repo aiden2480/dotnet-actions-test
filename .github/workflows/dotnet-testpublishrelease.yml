@@ -58,7 +58,7 @@ jobs:
 
     - name: Install root certificate
       if: matrix.os == 'windows-latest'
-      run: 
+      run: |
         $certificate_root = $certificate_root -replace '-----BEGIN CERTIFICATE-----', ''
         $certificate_root = $certificate_root -replace '-----END CERTIFICATE-----', ''
 
